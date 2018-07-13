@@ -8,10 +8,14 @@ function eventListener() {
 
   //evento para eliminar nota de la lista
   noteList.addEventListener('click', removeNote);
+
+  //cargar elementos del local storage
+  document.addEventListener('DOMContentLoaded', localStorageOnLoad);
 }
 eventListener();
 
 //Funciones
+//funcion para crear nota y agregarla a la lista
 function newNote(e) {
   e.preventDefault();
 
@@ -19,6 +23,54 @@ function newNote(e) {
   const note = document.getElementById('note').value;
   document.getElementById('note').value = '';
 
+  addElementInList(note);
+
+  //agregar la nota al localstorage
+  addNoteToLocalstorage(note);
+}
+
+//funcion para remover nota de la lista
+function removeNote(e) {
+  //delegacion de evento pregunta si el target del click fue en el link con la clase remove-note
+  if (e.target.classList.contains('remove-note')) {
+    //elimina el padre del link donde se hace click
+    e.target.parentElement.remove();
+  }
+}
+
+function addNoteToLocalstorage(note) {
+  let notes = getNotesFromLocalstorage();
+
+  //agregar nota al array
+  notes.push(note);
+
+  //convertir el arra en string
+  localStorage.setItem('notes', JSON.stringify(notes));
+}
+
+//cargar datos del local storage
+function localStorageOnLoad() {
+  let notes = getNotesFromLocalstorage();
+
+  notes.forEach(note => {
+    addElementInList(note);
+  });
+}
+
+//helper para obtener datos del local storage
+function getNotesFromLocalstorage() {
+  let notes;
+  const notesLS = localStorage.getItem('notes');
+  if (notesLS === null) {
+    notes = [];
+  } else {
+    notes = JSON.parse(notesLS);
+  }
+  return notes;
+}
+
+//helper para crear elemento en la lista
+function addElementInList(note) {
   //crear boton de eliminar
   const removeBtn = document.createElement('a');
   removeBtn.classList = 'remove-note';
@@ -33,10 +85,4 @@ function newNote(e) {
 
   //colocar el li en el div tweet-list
   noteList.appendChild(li);
-}
-
-function removeNote(e) {
-  if (e.target.classList.contains('remove-note')) {
-    e.target.parentElement.remove();
-  }
 }

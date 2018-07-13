@@ -21,12 +21,14 @@ function newNote(e) {
 
   //leer el valor del texto en el textarea
   const note = document.getElementById('note').value;
-  document.getElementById('note').value = '';
+  // document.getElementById('note').value = '';
 
+  //agregando elemento a la lista con el valor del textarea
   addElementInList(note);
 
   //agregar la nota al localstorage
   addNoteToLocalstorage(note);
+  this.reset();
 }
 
 //funcion para remover nota de la lista
@@ -35,6 +37,7 @@ function removeNote(e) {
   if (e.target.classList.contains('remove-note')) {
     //elimina el padre del link donde se hace click
     e.target.parentElement.remove();
+    removeNoteFromLocalstorage(e.target.parentElement.textContent);
   }
 }
 
@@ -55,6 +58,21 @@ function localStorageOnLoad() {
   notes.forEach(note => {
     addElementInList(note);
   });
+}
+
+//eliminar nota del local storage
+function removeNoteFromLocalstorage(note) {
+  let notes = getNotesFromLocalstorage();
+
+  const noteSinX = note.substring(0, note.length - 1);
+
+  notes.forEach((noteLS, index) => {
+    if (noteSinX === noteLS) {
+      notes.splice(index, 1);
+    }
+  });
+
+  localStorage.setItem('notes', JSON.stringify(notes));
 }
 
 //helper para obtener datos del local storage

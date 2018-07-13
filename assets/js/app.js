@@ -3,12 +3,16 @@ const noteList = document.getElementById('note-list');
 
 //Eventos
 function eventListener() {
-  document.querySelector('#form').addEventListener('submit', newTweet);
+  //evento que envia lo que esta escrito en el valor del textarea a la lista
+  document.querySelector('#form').addEventListener('submit', newNote);
+
+  //evento para eliminar nota de la lista
+  noteList.addEventListener('click', removeNote);
 }
 eventListener();
 
 //Funciones
-function newTweet(e) {
+function newNote(e) {
   e.preventDefault();
 
   //leer el valor del texto en el textarea
@@ -29,4 +33,10 @@ function newTweet(e) {
 
   //colocar el li en el div tweet-list
   noteList.appendChild(li);
+}
+
+function removeNote(e) {
+  if (e.target.classList.contains('remove-note')) {
+    e.target.parentElement.remove();
+  }
 }
